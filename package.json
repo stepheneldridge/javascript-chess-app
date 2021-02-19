@@ -1,0 +1,11 @@
+{
+  "name": "chess-server",
+  "version": "0.0.0",
+  "description": "chess variant server",
+  "main": "chess-server.js",
+  "scripts": {
+    "start": "node chess-server.js"
+  },
+  "author": "Stephen Eldridge",
+  "license": ""
+}
