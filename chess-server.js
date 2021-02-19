@@ -10,13 +10,13 @@ const server = http.createServer((req, res) => {
     if(req.url.startsWith("/api")){
 
     }else{
-        let filename = "/front";
+        let filepath = ["front"];
         if(req.url == "/"){
-            filename += landing;
+            filepath.push(landing);
         }else{
-            filename += req.url;
+            filepath.push(req.url);
         }
-        fs.readFile(filename, (err, data) => {
+        fs.readFile(path.join(__dirname, ...filepath), (err, data) => {
             if(err)throw err;
             let type = mime.lookup(filename);
             if(!type)throw new Error("No mime type for file");
