@@ -20,7 +20,7 @@ const server = http.createServer((req, res) => {
         }else{
             filepath += req.url;
         }
-        fs.readFile(filepath, (err, data) => {
+        fs.readFile(filepath).then((err, data) => {
             console.log("success")
             if(err)throw err;
             let type = mime.lookup(filename);
