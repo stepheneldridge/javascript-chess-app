@@ -10,7 +10,7 @@ const server = http.createServer((req, res) => {
     if(req.url.startsWith("/api")){
 
     }else{
-        let filepath = ["front"];
+        let filepath = ["..", "front"];
         if(req.url == "/"){
             filepath.push(landing);
         }else{
