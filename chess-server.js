@@ -1,6 +1,6 @@
 const http = require('http');
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs/promises');
 const mime = require('mime-types');
 
 const landing = "/chess.html";
