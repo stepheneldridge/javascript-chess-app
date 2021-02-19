@@ -7,8 +7,10 @@ const landing = "/chess.html";
 
 const server = http.createServer((req, res) => {
     console.log(req.socket.localAddress + ":" + req.host + " => " + req.url);
-    const f = await fs.readdir(".");
-    console.log(f)
+    fs.readdir(".").then(e => {
+        console.log(e)
+    });
+    // console.log(f)
     if(req.url.startsWith("/api")){
 
     }else{
