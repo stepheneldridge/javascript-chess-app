@@ -20,7 +20,7 @@ function write_error(res, code, error){
 }
 
 const server = http.createServer((req, res) => {
-    console.log(req.socket.localAddress + " : " + req.method + " => " + req.url);
+    if(DEBUG_MODE)console.log(req.socket.localAddress + " : " + req.method + " => " + req.url);
     if(req.url.startsWith("/api")){
 
     }else{
@@ -31,14 +31,13 @@ const server = http.createServer((req, res) => {
             filepath += req.url;
         }
         let type = mime.lookup(filepath);
-        if(!type)return write_error(403, "No mime type for file");
+        if(!type)return write_error(res, 403, "No mime type for file");
         fs.readFile(filepath).then((data) => {
-            console.log("success");
             res.writeHead(200, {"Content-Type": type});
             res.write(data);
             res.end();
         }).catch(err => {
-            write_error(404, err)
+            write_error(res, 404, err)
         });
     }
     
