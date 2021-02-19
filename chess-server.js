@@ -30,9 +30,9 @@ const server = http.createServer((req, res) => {
         }else{
             filepath += req.url;
         }
-        let type = mime.lookup(filepath);
-        if(!type)return write_error(res, 403, "No mime type for file");
         fs.readFile(filepath).then((data) => {
+            let type = mime.lookup(filepath);
+            if(!type)return write_error(res, 403, "No mime type for file");
             res.writeHead(200, {"Content-Type": type});
             res.write(data);
             res.end();
