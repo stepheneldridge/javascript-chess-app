@@ -22,15 +22,18 @@ const server = http.createServer((req, res) => {
             if(!type)throw new Error("No mime type for file");
             res.writeHead(200, {"Content-Type": type});
             res.write(data);
+            res.end();
         }).catch(err => {
+            console.log(err)
             res.writeHead(404);
             if(typeof err == "object"){
                 res.write(err.message);
             }else{
                 res.write(err);
             }
+            res.end();
         });
     }
-    res.end();
+    
 });
 server.listen(process.env.PORT || 8080);
