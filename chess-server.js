@@ -5,17 +5,22 @@ const mime = require('mime-types');
 
 const landing = "/chess.html";
 
-function write_error(res, code, message){
+const DEBUG_MODE = true;
+
+function write_error(res, code, error){
+    if(DEBUG_MODE){
+        console.log(error);
+    }
     res.writeHead(code);
-    res.end(message);
+    if(typeof error == "object"){
+        res.end(error.message);
+    }else{
+        res.end(error);
+    }
 }
 
 const server = http.createServer((req, res) => {
-    console.log(req.socket.localAddress + ":" + req.host + " => " + req.url);
-    fs.readdir("./front").then(e => {
-        console.log(e)
-    });
-    // console.log(f)
+    console.log(req.socket.localAddress + " : " + req.method + " => " + req.url);
     if(req.url.startsWith("/api")){
 
     }else{
@@ -33,14 +38,7 @@ const server = http.createServer((req, res) => {
             res.write(data);
             res.end();
         }).catch(err => {
-            console.log(err)
-            res.writeHead(404);
-            if(typeof err == "object"){
-                res.write(err.message);
-            }else{
-                res.write(err);
-            }
-            res.end();
+            write_error(404, err)
         });
     }
     
