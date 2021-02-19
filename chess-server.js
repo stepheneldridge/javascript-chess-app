@@ -20,9 +20,8 @@ const server = http.createServer((req, res) => {
         }else{
             filepath += req.url;
         }
-        fs.readFile(filepath).then((err, data) => {
-            console.log("success")
-            if(err)throw err;
+        fs.readFile(filepath).then((data) => {
+            console.log("success");
             let type = mime.lookup(filename);
             if(!type)throw new Error("No mime type for file");
             res.writeHead(200, {"Content-Type": type});
