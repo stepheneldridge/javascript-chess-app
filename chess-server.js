@@ -6,17 +6,16 @@ const mime = require('mime-types');
 const landing = "/chess.html";
 
 const server = http.createServer((req, res) => {
-    console.log(req.socket.localAddress + ":" + req.host + " => " + req.path)
-    if(req.path.startsWith("/api")){
+    console.log(req.socket.localAddress + ":" + req.host + " => " + req.url);
+    if(req.url.startsWith("/api")){
 
     }else{
         let filename = "/front";
-        if(req.path == "/"){
+        if(req.url == "/"){
             filename += landing;
         }else{
-            filename += req.path;
+            filename += req.url;
         }
-        fs.createReadStream(filename).pipe(res);
         fs.readFile(filename, (err, data) => {
             if(err)throw err;
             let type = mime.lookup(filename);
