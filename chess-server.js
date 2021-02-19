@@ -21,14 +21,15 @@ function write_error(res, code, error){
 
 const server = http.createServer((req, res) => {
     if(DEBUG_MODE)console.log(req.socket.localAddress + " : " + req.method + " => " + req.url);
-    if(req.url.startsWith("/api")){
-
+    let url = new URL(req.url, `http://${req.headers.host}`);
+    if(url.pathname.startsWith("/api")){
+        res.end("API")
     }else{
         let filepath = "./front";
-        if(req.url == "/"){
+        if(url.pathname == "/"){
             filepath += landing;
         }else{
-            filepath += req.url;
+            filepath += url.pathname;
         }
         fs.readFile(filepath).then((data) => {
             let type = mime.lookup(filepath);
@@ -40,6 +41,5 @@ const server = http.createServer((req, res) => {
             write_error(res, 404, err)
         });
     }
-    
 });
 server.listen(process.env.PORT || 8080);
