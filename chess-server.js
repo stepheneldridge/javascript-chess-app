@@ -7,14 +7,14 @@ const landing = "/chess.html";
 
 const server = http.createServer((req, res) => {
     console.log(req.socket.localAddress + ":" + req.host + " => " + req.url);
-    fs.readdir(".").then(e => {
+    fs.readdir("./front").then(e => {
         console.log(e)
     });
     // console.log(f)
     if(req.url.startsWith("/api")){
 
     }else{
-        let filepath = "front";
+        let filepath = "./front";
         if(req.url == "/"){
             filepath += landing;
         }else{
