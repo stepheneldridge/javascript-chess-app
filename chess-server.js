@@ -5,6 +5,11 @@ const mime = require('mime-types');
 
 const landing = "/chess.html";
 
+function write_error(res, code, message){
+    res.writeHead(code);
+    res.end(message);
+}
+
 const server = http.createServer((req, res) => {
     console.log(req.socket.localAddress + ":" + req.host + " => " + req.url);
     fs.readdir("./front").then(e => {
@@ -20,10 +25,10 @@ const server = http.createServer((req, res) => {
         }else{
             filepath += req.url;
         }
+        let type = mime.lookup(filepath);
+        if(!type)return write_error(403, "No mime type for file");
         fs.readFile(filepath).then((data) => {
             console.log("success");
-            let type = mime.lookup(filename);
-            if(!type)throw new Error("No mime type for file");
             res.writeHead(200, {"Content-Type": type});
             res.write(data);
             res.end();
