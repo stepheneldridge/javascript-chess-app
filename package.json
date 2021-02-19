@@ -9,6 +9,9 @@
   "author": "Stephen Eldridge",
   "license": "",
   "dependencies": {
-    "mime-types": "^2.1.29"
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "mime-types": "^2.1.29",
+    "uuid": "^8.3.2"
   }
 }
