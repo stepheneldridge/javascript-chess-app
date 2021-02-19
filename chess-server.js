@@ -7,16 +7,18 @@ const landing = "/chess.html";
 
 const server = http.createServer((req, res) => {
     console.log(req.socket.localAddress + ":" + req.host + " => " + req.url);
+    const f = await fs.readdir(".");
+    console.log(f)
     if(req.url.startsWith("/api")){
 
     }else{
-        let filepath = ["..", "front"];
+        let filepath = "/front";
         if(req.url == "/"){
-            filepath.push(landing);
+            filepath += landing;
         }else{
-            filepath.push(req.url);
+            filepath += req.url;
         }
-        fs.readFile(path.join(__dirname, ...filepath), (err, data) => {
+        fs.readFile(path.resolve(filepath), (err, data) => {
             if(err)throw err;
             let type = mime.lookup(filename);
             if(!type)throw new Error("No mime type for file");
