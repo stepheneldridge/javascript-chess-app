@@ -36,7 +36,7 @@ let sess = session({
         return uuid();
     },
     "secret": process.env.COOKIE_SECRET || "test",
-    "resave": true,
+    "resave": false,
     "saveUninitialized": true,
     "cookie": {"secure": true}
 });
