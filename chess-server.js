@@ -67,14 +67,6 @@ app.get("/*", (req, res) => {
 
 server.listen(process.env.PORT || 8080);
 
-let matcher = new Matcher();
-io.on("connection", socket => {
-    // socket.emit("p", "hello");
-    matcher.addWaiting(socket.id, socket);
-    socket.on("response", data => {
-        console.log(data);
-    })
-});
 
 class Game{
     constructor(white, black){
@@ -106,3 +98,12 @@ class Matcher{
         }
     }
 }
+
+let matcher = new Matcher();
+io.on("connection", socket => {
+    // socket.emit("p", "hello");
+    matcher.addWaiting(socket.id, socket);
+    socket.on("response", data => {
+        console.log(data);
+    })
+});
