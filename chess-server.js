@@ -107,8 +107,15 @@ class Matcher{
         if(this.matches[sid]){
             return this.matches[sid].update_socket(sid, socket);
         }
-        this.waiting.push({"id": sid, "socket": socket});
-        socket.emit("waiting", this.waiting.length);
+        for(let i = 0; i < this.waiting.length; i++){
+            if(this.waiting[i].id == sid){
+                this.waiting[i].socket = socket;
+                socket.emit("waiting", this.waiting.length + " you are place " + (i + 1));
+            }
+        }else{
+            this.waiting.push({"id": sid, "socket": socket});
+            socket.emit("waiting", this.waiting.length);
+        }
         this.tryPairing();
     }
 
