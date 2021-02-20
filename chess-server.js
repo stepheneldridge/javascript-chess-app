@@ -1,8 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const uuid = require('uuid').v4;
-const io = require('socket.io');
-// const http = require('http');
+const http = require('http');
 const path = require('path');
 const fs = require('fs/promises');
 const mime = require('mime-types');
@@ -23,11 +22,13 @@ function write_error(res, code, error){
     }
 }
 
-const server = express();
-const socket = io(server);
+const app = express();
+const server = http.createServer(app);
+const io = require('socket.io').listen(server);
 
-server.enable("trust proxy");
-server.use(session({
+
+app.enable("trust proxy");
+app.use(session({
     "genid": req => {
         return uuid();
     },
@@ -37,11 +38,13 @@ server.use(session({
     "cookie": {"secure": true}
 }));
 
-server.get("/api/*", (req, res) => {
+app.use("/static", express.static("node_modules"));
+
+app.get("/api/*", (req, res) => {
     res.end("api wins");
 });
 
-server.get("/*", (req, res) => {
+app.get("/*", (req, res) => {
     if(DEBUG_MODE)console.log(req.method + " => " + req.url);
     let url = new URL(req.url, `http://${req.headers.host}`);
     let filepath = "./front";
@@ -63,9 +66,12 @@ server.get("/*", (req, res) => {
 
 server.listen(process.env.PORT || 8080);
 
-socket.on("connection", sock => {
-    console.log("connected");
-})
+io.on("connection", socket => {
+    socket.emit("ping", "hello");
+    socket.on("response", data => {
+        console.log(data);
+    })
+}
 
 class Game{
     constructor(white, black){

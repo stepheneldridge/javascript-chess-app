@@ -6,9 +6,13 @@
     <link rel="manifest" href="/icon/site.webmanifest">
     <title>Chess Variants</title>
     <script src="board.js" charset="utf-8"></script>
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="/static/socket.io/node_modules/socket.io-client/socket.io.js"></script>
     <script type="text/javascript">
         var socket = io();
+        socket.on("ping", data => {
+            console.log(data);
+            socket.emit("response", "huh");
+        })
     </script>
 </head>
 <body onload="init();">
