@@ -7,7 +7,7 @@ const socketio = require('socket.io');
 const path = require('path');
 const fs = require('fs/promises');
 const mime = require('mime-types');
-const cookie = require('cookie');
+// const cookie = require('cookie');
 const memorystore = require('memorystore')(session);
 
 const landing = "/chess.html";
@@ -77,23 +77,40 @@ server.listen(process.env.PORT || 8080);
 
 class Game{
     constructor(white, black){
+        this.players = {
+            "white": white,
+            "black": black
+        }
         this.game_id = uuid();
-        this.white = white;
-        this.black = black;
-        this.white.socket.emit("matched", "white");
-        this.black.socket.emit("matched", "black");
+        for(let i in this.players){
+            this.players[i].socket.emit("matched", i);
+            this.set_listener(i, this.players[i].socket);
+        }
+    }
+
+    set_listener(color, socket){
+        socket.on("move", data => {
+            let alert;
+            if(color == "white"){
+                alert = this.players.black;
+            }else{
+                alert = this.players.white;
+            }
+            alert.emit("moved", data);
+        });
     }
 
     update_socket(sid, socket){
         let color;
-        if(this.white.id == sid){
+        if(this.players.white.id == sid){
             color = "white";
-            this.white.socket = socket;
-        }else if(this.black.id == sid){
+            this.players.white.socket = socket;
+        }else if(this.players.black.id == sid){
             color = "black";
-            this.black.socket = socket;
+            this.players.black.socket = socket;
         }
         socket.emit("matched", "reconnected as " + color);
+        this.set_listener(color, socket);
     }
 }
 
@@ -123,6 +140,10 @@ class Matcher{
         this.tryPairing();
     }
 
+    getGame(sid){
+        return this.matches[sid];
+    }
+
     tryPairing(){
         if(this.waiting.length >= 2){
             let clients = this.waiting.splice(0, 2);
@@ -139,8 +160,12 @@ io.on("connection", socket => {
     console.log(socket.handshake.session.id);
     // let cookies = cookie.parse(socket.request.session.cookie);
     // console.log(cookies)
+    let sid = socket.handshake.session.id;
     matcher.addWaiting(socket.handshake.session.id, socket);
-    socket.on("response", data => {
-        console.log(data);
+    socket.on("move", data => {
+        let game = matcher.getGame(sid);
+        if(game){
+
+        }
     })
 });

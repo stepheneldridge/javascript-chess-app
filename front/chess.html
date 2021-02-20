@@ -8,14 +8,7 @@
     <script src="board.js" charset="utf-8"></script>
     <script src="/static/socket.io/client-dist/socket.io.min.js"></script>
     <script type="text/javascript">
-        var socket = io();
-        socket.on("waiting", data => {
-            console.log("Queue length: " + data);
-            // socket.emit("response", "huh");
-        });
-        socket.on("matched", data => {
-            console.log("matched, you are " + data)
-        })
+
     </script>
 </head>
 <body onload="init();">
