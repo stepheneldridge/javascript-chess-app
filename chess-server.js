@@ -36,7 +36,7 @@ server.use(session({
     "cookie": {"secure": true}
 }));
 
-server.get(/\/[^\/]+/, (req, res) => {
+server.get(/^\/[^\/]*$/, (req, res) => {
     if(DEBUG_MODE)console.log(req.method + " => " + req.url);
     let url = new URL(req.url, `http://${req.headers.host}`);
     let filepath = "./front";
