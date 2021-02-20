@@ -36,7 +36,11 @@ server.use(session({
     "cookie": {"secure": true}
 }));
 
-server.get(/^\/[^\/]*$/, (req, res) => {
+server.get("/api/*", (req, res) => {
+    req.end("api wins");
+});
+
+server.get("/*", (req, res) => {
     if(DEBUG_MODE)console.log(req.method + " => " + req.url);
     let url = new URL(req.url, `http://${req.headers.host}`);
     let filepath = "./front";
@@ -56,10 +60,6 @@ server.get(/^\/[^\/]*$/, (req, res) => {
     });
 });
 
-server.get("/api/*", (req, res) => {
-    req.write(200, "api wins");
-    req.end();
-});
 // const server = http.createServer((req, res) => {
 //     if(DEBUG_MODE)console.log(req.method + " => " + req.url);
 //     let url = new URL(req.url, `http://${req.headers.host}`);
