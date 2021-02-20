@@ -1,14 +1,38 @@
 let canvas;
 let context;
 let board;
+let socket;
+let settings;
+function set_socket_listeners(){
+    var socket = io();
+    socket.on("waiting", data => {
+        console.log("Queue length: " + data);
+        // socket.emit("response", "huh");
+    });
+    socket.on("matched", data => {
+        console.log("matched, you are " + data)
+        board = new Board(1000, 1000, data);
+        board.load_variant(settings);
+        board.start_game();
+    });
+    socket.on("moved", data => {
+        board.perform_move(data);
+    })
+}
+
+function notify_move(move){
+    socket.emit("move", move);
+}
+
 function init(){
+    set_socket_listeners();
     canvas = document.createElement("canvas");
     context = canvas.getContext("2d");
     document.body.appendChild(canvas);
     canvas.width = 1000;
     canvas.height = 1000;
     board = new Board(1000, 1000, "white");
-    let settings = {
+    settings = {
         "grid": {
             "x": 8,
             "y": 8,
@@ -848,7 +872,7 @@ class Board{
     select(x, y){
         let tile = this.get_tile(x, y);
         if(tile != null){
-            if(tile.color != this.turn)return false;
+            if(tile.color != this.turn || this.view != tile.color)return false;
             let valid = this.get_valid_moves(x, y, tile.get_moves());
             this.selected_piece = [x, y, tile, valid];
             this.selected_piece[2].is_drag = true;
@@ -956,7 +980,10 @@ class Board{
                     }
                     let moved = this.perform_move(data)
                     this.deselect();
-                    if(moved)return true;
+                    if(moved){
+                        notify_move(data);
+                        return true;
+                    }
                 }
                 break;
             case "mousemove":
