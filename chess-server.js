@@ -70,10 +70,23 @@ server.listen(process.env.PORT || 8080);
 
 class Game{
     constructor(white, black){
+        this.game_id = uuid();
         this.white = white;
         this.black = black;
         this.white.socket.emit("matched", "white");
         this.black.socket.emit("matched", "black");
+    }
+
+    update_socket(sid, socket){
+        let color;
+        if(this.white.id == sid){
+            color = "white";
+            this.white.socket = socket;
+        }else if(this.black.id == sid){
+            color = "black";
+            this.black.socket = socket;
+        }
+        socket.emit("matched", "reconnected as " + color);
     }
 }
 
@@ -84,8 +97,11 @@ class Matcher{
     }
 
     addWaiting(sid, socket){
-        socket.emit("waiting", this.waiting.length);
+        if(this.matches[sid]){
+            return this.matches[sid].update_socket(sid, socket);
+        }
         this.waiting.push({"id": sid, "socket": socket});
+        socket.emit("waiting", this.waiting.length);
         this.tryPairing();
     }
 
