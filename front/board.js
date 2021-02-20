@@ -981,7 +981,7 @@ class Board{
                     let moved = this.perform_move(data)
                     this.deselect();
                     if(moved){
-                        notify_move({"to": data.to, "from", data.from});
+                        notify_move({"to": data.to, "from": data.from});
                         return true;
                     }
                 }
