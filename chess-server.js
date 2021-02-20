@@ -39,7 +39,7 @@ app.use(session({
     "cookie": {"secure": true}
 }));
 
-app.use("/static", express.static("node_modules"));
+app.use("/static/*", express.static("node_modules"));
 
 app.get("/api/*", (req, res) => {
     res.end("api wins");
