@@ -14,9 +14,11 @@ function set_socket_listeners(){
         board = new Board(1000, 1000, data);
         board.load_variant(settings);
         board.start_game();
+        board.draw(context);
     });
     socket.on("moved", data => {
         board.perform_move(data);
+        board.draw(context);
     })
 }
 
