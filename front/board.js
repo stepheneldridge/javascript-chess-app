@@ -4,7 +4,7 @@ let board;
 let socket;
 let settings;
 function set_socket_listeners(){
-    var socket = io();
+    socket = io();
     socket.on("waiting", data => {
         console.log("Queue length: " + data);
         // socket.emit("response", "huh");
