@@ -96,7 +96,7 @@ class Game{
             }else{
                 alert = this.players.white;
             }
-            alert.emit("moved", data);
+            alert.socket.emit("moved", data);
         });
     }
 
