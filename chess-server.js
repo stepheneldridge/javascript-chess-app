@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const uuid = require('uuid').v4;
 const http = require('http');
+const socketio = require('socket.io');
 const path = require('path');
 const fs = require('fs/promises');
 const mime = require('mime-types');
@@ -24,7 +25,7 @@ function write_error(res, code, error){
 
 const app = express();
 const server = http.createServer(app);
-const io = require('socket.io').listen(server);
+const io = socketio(server);
 
 
 app.enable("trust proxy");
@@ -33,7 +34,7 @@ app.use(session({
         return uuid();
     },
     "secret": process.env.COOKIE_SECRET,
-    "resave": false,
+    "resave": true,
     "saveUninitialized": true,
     "cookie": {"secure": true}
 }));
