@@ -1,11 +1,13 @@
 const express = require('express');
 const session = require('express-session');
+const sharedsession = require('express-socket.io-session');
 const uuid = require('uuid').v4;
 const http = require('http');
 const socketio = require('socket.io');
 const path = require('path');
 const fs = require('fs/promises');
 const mime = require('mime-types');
+const cookie = require('cookie');
 
 const landing = "/chess.html";
 
@@ -29,16 +31,19 @@ const io = socketio(server);
 
 
 app.enable("trust proxy");
-app.use(session({
+let sess = session({
     "genid": req => {
         return uuid();
     },
-    "secret": process.env.COOKIE_SECRET,
+    "secret": process.env.COOKIE_SECRET || "test",
     "resave": true,
     "saveUninitialized": true,
     "cookie": {"secure": true}
-}));
+});
 
+io.use(sharedsession(sess, {"autoSave": true}));
+
+app.use(sess);
 app.use("/static", express.static("./node_modules"));
 
 app.get("/api/*", (req, res) => {
@@ -118,6 +123,9 @@ class Matcher{
 let matcher = new Matcher();
 io.on("connection", socket => {
     // socket.emit("p", "hello");
+    console.log(socket.handshake.session.id);
+    // let cookies = cookie.parse(socket.request.session.cookie);
+    // console.log(cookies)
     matcher.addWaiting(socket.id, socket);
     socket.on("response", data => {
         console.log(data);
