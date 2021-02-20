@@ -42,7 +42,7 @@ app.use(session({
 app.use("/static", express.static("./node_modules"));
 
 app.get("/api/*", (req, res) => {
-    res.end("api wins");
+    res.end("There is no API yet");
 });
 
 app.get("/*", (req, res) => {
@@ -67,8 +67,10 @@ app.get("/*", (req, res) => {
 
 server.listen(process.env.PORT || 8080);
 
+let matcher = new Matcher();
 io.on("connection", socket => {
-    socket.emit("ping", "hello");
+    // socket.emit("p", "hello");
+    matcher.addWaiting(socket.id, socket);
     socket.on("response", data => {
         console.log(data);
     })
@@ -78,6 +80,8 @@ class Game{
     constructor(white, black){
         this.white = white;
         this.black = black;
+        this.white.socket.emit("matched", "white");
+        this.black.socket.emit("matched", "black");
     }
 }
 
@@ -87,13 +91,18 @@ class Matcher{
         this.matches = {};
     }
 
-    addWaiting(sid){
-        this.waiting.push(sid);
+    addWaiting(sid, socket){
+        socket.emit("waiting", this.waiting.length);
+        this.waiting.push({"id": sid, "socket": socket});
+        this.tryPairing();
     }
 
     tryPairing(){
         if(this.waiting.length >= 2){
-
+            let clients = this.waiting.splice(0, 2);
+            let game = new Game(clients[0], clients[1]);
+            this.matches[clients[0].id] = game;
+            this.matches[clients[1].id] = game;
         }
     }
 }

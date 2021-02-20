@@ -9,9 +9,12 @@
     <script src="/static/socket.io/client-dist/socket.io.min.js"></script>
     <script type="text/javascript">
         var socket = io();
-        socket.on("ping", data => {
-            console.log(data);
-            socket.emit("response", "huh");
+        socket.on("waiting", data => {
+            console.log("Queue length: " + data);
+            // socket.emit("response", "huh");
+        });
+        socket.on("matched", data => {
+            console.log("matched, you are " + data)
         })
     </script>
 </head>
