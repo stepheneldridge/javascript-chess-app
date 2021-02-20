@@ -126,7 +126,7 @@ io.on("connection", socket => {
     console.log(socket.handshake.session.id);
     // let cookies = cookie.parse(socket.request.session.cookie);
     // console.log(cookies)
-    matcher.addWaiting(socket.id, socket);
+    matcher.addWaiting(socket.handshake.session.id, socket);
     socket.on("response", data => {
         console.log(data);
     })
