@@ -71,7 +71,7 @@ io.on("connection", socket => {
     socket.on("response", data => {
         console.log(data);
     })
-}
+});
 
 class Game{
     constructor(white, black){
