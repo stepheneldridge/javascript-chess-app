@@ -8,7 +8,7 @@ const path = require('path');
 const fs = require('fs/promises');
 const mime = require('mime-types');
 const cookie = require('cookie');
-const memorystore = require('memorystore');
+const memorystore = require('memorystore')(session);
 
 const landing = "/chess.html";
 
@@ -36,7 +36,7 @@ let sess = session({
     "genid": req => {
         return uuid();
     },
-    "store": new memorystore(session)(),
+    "store": new memorystore(),
     "secret": process.env.COOKIE_SECRET || "test",
     "resave": true,
     "saveUninitialized": true,
