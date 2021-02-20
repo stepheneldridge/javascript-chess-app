@@ -1,8 +1,8 @@
 const express = require('express');
 const session = require('express-session');
 const uuid = require('uuid').v4;
-
-const http = require('http');
+const io = require('socket.io');
+// const http = require('http');
 const path = require('path');
 const fs = require('fs/promises');
 const mime = require('mime-types');
@@ -24,6 +24,7 @@ function write_error(res, code, error){
 }
 
 const server = express();
+const socket = io(server);
 
 server.enable("trust proxy");
 server.use(session({
@@ -37,7 +38,7 @@ server.use(session({
 }));
 
 server.get("/api/*", (req, res) => {
-    req.end("api wins");
+    res.end("api wins");
 });
 
 server.get("/*", (req, res) => {
@@ -60,27 +61,32 @@ server.get("/*", (req, res) => {
     });
 });
 
-// const server = http.createServer((req, res) => {
-//     if(DEBUG_MODE)console.log(req.method + " => " + req.url);
-//     let url = new URL(req.url, `http://${req.headers.host}`);
-//     if(url.pathname.startsWith("/api")){
-//         res.end("API")
-//     }else{
-//         let filepath = "./front";
-//         if(url.pathname == "/"){
-//             filepath += landing;
-//         }else{
-//             filepath += url.pathname;
-//         }
-//         fs.readFile(filepath).then((data) => {
-//             let type = mime.lookup(filepath);
-//             if(!type)return write_error(res, 403, "No mime type for file");
-//             res.writeHead(200, {"Content-Type": type});
-//             res.write(data);
-//             res.end();
-//         }).catch(err => {
-//             write_error(res, 404, err)
-//         });
-//     }
-// });
 server.listen(process.env.PORT || 8080);
+
+socket.on("connection", sock => {
+    console.log("connected");
+})
+
+class Game{
+    constructor(white, black){
+        this.white = white;
+        this.black = black;
+    }
+}
+
+class Matcher{
+    constructor(){
+        this.waiting = [];
+        this.matches = {};
+    }
+
+    addWaiting(sid){
+        this.waiting.push(sid);
+    }
+
+    tryPairing(){
+        if(this.waiting.length >= 2){
+
+        }
+    }
+}
