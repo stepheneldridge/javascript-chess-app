@@ -6,7 +6,7 @@ let settings;
 function set_socket_listeners(){
     socket = io();
     socket.on("waiting", data => {
-        console.log("Queue length: " + data);
+        console.log("queue length: " + data);
         // socket.emit("response", "huh");
     });
     socket.on("matched", data => {
@@ -944,7 +944,7 @@ class Board{
             ty = this.tiles_y - ty - 1;
         }
         if(btn == 2){
-            this.create_annotation(tx, ty, type);
+            this.create_annotation(mc[0], mc[1], type);
         }
         if(btn != 0)return;
         switch(type){
